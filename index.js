@@ -6,26 +6,34 @@ import { Space } from "./space.js"
 const canvas = search.id("canvas")
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext("2d")
-let always = v2.zero()
-
+const { random, floor } = Math
+let width = canvas.width = innerWidth
+let height = canvas.height = innerHeight
 const colors = [
-  "red", "yellow", "green", "blue", "purple"
+  "red", "yellow", "green", "blue", "purple", "white", "deeppink"
 ]
 const space = new Space
-space.add(new Planet(v2(innerWidth * Math.random() - innerWidth / 2, innerHeight * Math.random() - innerHeight / 2)))
-space.add(new Planet(v2(innerWidth * Math.random() - innerWidth / 2, innerHeight * Math.random() - innerHeight / 2)))
-space.add(new Planet(v2(innerWidth * Math.random() - innerWidth / 2, innerHeight * Math.random() - innerHeight / 2)))
+space.add(
+  new Planet(
+    v2(0, 0),
+    {
+      mass: 9 * (10 ** 3),
+      color: "gold",
+      radius: 50, notMove: true
+    }
+  )
+)
+space.add(new Planet(v2(width * random() - width / 2, height * random() - height / 2)))
+space.add(new Planet(v2(width * random() - width / 2, height * random() - height / 2)))
 
 canvas.addEventListener("click", e => {
   e.preventDefault()
-  always.x = e.clientX
-  always.y = e.clientY
-  const radius = Math.random() * 4 + 0.5
-  const mass = Math.random() * 10
-  const color = colors[Math.floor(Math.random() * colors.length)]
+  const radius = random() * 4 + 10
+  const mass = random() * 1000
+  const color = colors[floor(random() * colors.length)]
   space.add(new Planet(
-    v2(e.clientX - innerWidth / 2,
-      e.clientY - innerHeight / 2),
+    v2(e.clientX - width / 2,
+      e.clientY - height / 2),
     {
       color,
       mass,
@@ -33,15 +41,15 @@ canvas.addEventListener("click", e => {
     }
   ))
 })
+globalThis.addEventListener("resize",()=> {
+
+  width = canvas.width = innerWidth
+   height = canvas.height = innerHeight
+})
 new Loop((deltaT = 0) => {
-  const width = canvas.width = innerWidth
-  const height = canvas.height = innerHeight
   ctx.resetTransform()
   ctx.fillStyle = "black"
   ctx.fillRect(0, 0, width, height)
-  ctx.fillRect(always.x, always.y, 20, 20)
-  ctx.translate(
-    space.center.x = width / 2,
-    space.center.y = height / 2)
+  ctx.translate(width / 2, height / 2)
   space.update(deltaT, ctx)
 }, { play: true })
