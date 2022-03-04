@@ -41,14 +41,13 @@ canvas.addEventListener("click", e => {
     }
   ))
 })
-globalThis.addEventListener("resize",()=> {
-
+globalThis.addEventListener("resize", () => {
   width = canvas.width = innerWidth
-   height = canvas.height = innerHeight
+  height = canvas.height = innerHeight
 })
 new Loop((deltaT = 0) => {
   ctx.resetTransform()
-  ctx.fillStyle = "black"
+  ctx.fillStyle = "#00000011"
   ctx.fillRect(0, 0, width, height)
   ctx.translate(width / 2, height / 2)
   space.update(deltaT, ctx)

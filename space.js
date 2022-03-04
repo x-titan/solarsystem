@@ -1,7 +1,12 @@
-import { List, v2, AVector } from "./import.js"
+import { List, v2, AVector, Vector2 } from "./import.js"
 import { Planet } from "./planet.js"
 
-const G = 6.67430 * (10 * -5)
+const valueminmax = (v, min, max) => {
+  if (min && v < min) v = min
+  if (max && v > max) v = max
+  return v
+}
+const G = 6.67430 * (10 * 500)
 const PI2 = Math.PI * 2
 const { PI, atan2, sqrt, cos, sin } = Math
 function rotate(vel, angle) {
@@ -54,75 +59,45 @@ export class Space {
       /** @type {Planet} */
       const p = node.value
       const pos = p.pos
-      ctx.beginPath()
-      ctx.fillStyle = p.color
-      ctx.strokeStyle = p.border
-      ctx.lineWidth = 1
-      ctx.arc(
-        p.pos.x,
-        p.pos.y,
-        p.radius,
-        0, PI2)
-      ctx.fill()
-      ctx.stroke()
-      ctx.closePath()
-      ctx.save()
 
       this.planetList.each(node_ => {
         /** @type {Planet} */
         const p2 = node_.value
         if (p !== p2) {
+          const force = pos.clone().sub(pos2)
           const pos2 = p2.pos
-          const dx = pos2.x - pos.x
-          const dy = pos2.y - pos.y
-          const distance = sqrt(dx ** 2 + dy ** 2) || 1
+          const dx = pos.x - pos2.x
+          const dy = pos.y - pos2.y
+          const distance = valueminmax(sqrt(dx ** 2 + dy ** 2), 100, 1000)
           if (distance < p.radius + p2.radius) collision(p, p2)
-
-          const F = G * p2.mass / (distance ** 2)
-          const fx = F * dx / distance
-          const fy = F * dy / distance
-          p.force.x += fx
-          p.force.y += fy
-          p2.force.x -= fx
-          p2.force.y -= fy
-
-          ctx.beginPath()
-          ctx.strokeStyle = `hsla(0deg,0%,100%,${innerWidth / distance * 100}%)`
-          ctx.moveTo(pos.x, pos.y)
-          ctx.lineTo(pos2.x, pos2.y)
-          ctx.stroke()
-          ctx.closePath()
+          const g = G
+          const strength = (g * (p.mass * p2.mass)) / distance;
         }
       })
-      ctx.restore()
     })
     this.planetList.each(node => {
       const p = node.value
       const pos = p.pos
-      ctx.beginPath()
-      ctx.moveTo(pos.x, pos.y)
-      p.update(deltaT)
       const r = p.radius
-      ctx.lineTo(pos.x, pos.y)
-      ctx.strokeStyle = p.color
-      ctx.stroke()
-      ctx.closePath()
-      // if (pos.x - r < 0) {
-      //   pos.x = 0 + r
-      //   p.vel.x *= -1
-      // }
-      // if (pos.x + r > innerWidth) {
-      //   p.pos.x = innerWidth - r
-      //   p.vel.x *= -1
-      // }
-      // if (pos.y - r < 0) {
-      //   pos.y = 0 + r
-      //   p.vel.y *= -1
-      // }
-      // if (pos.y + r > innerHeight) {
-      //   p.pos.y = innerHeight - r
-      //   p.vel.y *= -1
-      // }
+      const w2 = innerWidth / 2
+      const h2 = innerHeight / 2
+      if (pos.x - r < -w2) {
+        pos.x = -w2 + r
+        p.vel.x *= -1
+      }
+      if (pos.x + r > w2) {
+        p.pos.x = w2 - r
+        p.vel.x *= -1
+      }
+      if (pos.y - r < -h2) {
+        pos.y = -h2 + r
+        p.vel.y *= -1
+      }
+      if (pos.y + r > h2) {
+        p.pos.y = h2 - r
+        p.vel.y *= -1
+      }
+      p.update(deltaT, ctx)
     })
   }
 }
