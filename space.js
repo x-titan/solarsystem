@@ -15,6 +15,12 @@ function rotate(vel, angle) {
     vel.x * sin(angle) + vel.y * cos(angle)
   )
 }
+function gforce(a, b) {
+  const pos = a.pos
+  const pos2 = b.pos
+  return G * a.mass * b.mass / ((innerHeight + innerWidth) ** 2 * 0.1 +
+    (pos.x - pos2.x) * (pos.x - pos2.x) + (pos.y - pos2.y) * (pos.y - pos2.y))
+}
 function collision(p1, p2) {
   const pos1 = p1.pos, pos2 = p2.pos
   const vdx = p1.vel.x - p2.vel.x
@@ -64,14 +70,22 @@ export class Space {
         /** @type {Planet} */
         const p2 = node_.value
         if (p !== p2) {
-          const force = pos.clone().sub(pos2)
           const pos2 = p2.pos
-          const dx = pos.x - pos2.x
-          const dy = pos.y - pos2.y
-          const distance = valueminmax(sqrt(dx ** 2 + dy ** 2), 100, 1000)
-          if (distance < p.radius + p2.radius) collision(p, p2)
-          const g = G
-          const strength = (g * (p.mass * p2.mass)) / distance;
+          if (pos.distance(pos2) < p.radius + p2.radius) collision(p, p2)
+          const GF = gforce(p, p2,deltaT)
+          const dx = pos2.x - pos.x
+          const dy = pos2.y - pos.y
+          const ang = atan2(dy,dx)
+          const direction = AVector.direction(pos, pos2)
+          p.force.x +=GF*cos(ang)
+          p.force.y +=GF*sin(ang)
+
+          ctx.beginPath()
+          ctx.moveTo(pos.x, pos.y)
+          ctx.lineTo(pos2.x, pos2.y)
+          ctx.strokeStyle = "white"
+          ctx.stroke()
+          ctx.closePath()
         }
       })
     })

@@ -5,14 +5,13 @@ const PI2 = PI * 2
 export class Planet {
   constructor(pos, {
     mass,
-    radius,
     color,
     notMove
   } = {}) {
     this.pos = pos || v2.zero()
-    this.vel = v2(random() - 0.5, random() - 0.5)
+    this.vel = v2.zero()
     this.force = v2.zero()
-    this.mass = mass || 1
+    this.mass = mass || 10
     this.radius = sqrt(this.mass) * 2
     this.color = color || "white"
     this.border = "black"

@@ -17,37 +17,44 @@ space.add(
   new Planet(
     v2(0, 0),
     {
-      mass: 9 * (10 ** 3),
+      mass: 9 * (10 ** 2),
       color: "gold",
-      radius: 50, notMove: true
+      notMove: true
     }
   )
 )
-space.add(new Planet(v2(width * random() - width / 2, height * random() - height / 2)))
+// space.add(new Planet(v2(width * random() - width / 2, height * random() - height / 2)))
 space.add(new Planet(v2(width * random() - width / 2, height * random() - height / 2)))
 
+
+let mass = 10
+let massplus = false
+
+canvas.addEventListener("mousedown", e => {
+  massplus = true
+})
 canvas.addEventListener("click", e => {
   e.preventDefault()
-  const radius = random() * 4 + 10
-  const mass = random() * 1000
   const color = colors[floor(random() * colors.length)]
   space.add(new Planet(
     v2(e.clientX - width / 2,
       e.clientY - height / 2),
     {
       color,
-      mass,
-      radius
+      mass
     }
   ))
+  massplus = false
+  mass = 10
 })
 globalThis.addEventListener("resize", () => {
   width = canvas.width = innerWidth
   height = canvas.height = innerHeight
 })
 new Loop((deltaT = 0) => {
+  if (massplus) mass+=5
   ctx.resetTransform()
-  ctx.fillStyle = "#00000011"
+  ctx.fillStyle = "#000000"
   ctx.fillRect(0, 0, width, height)
   ctx.translate(width / 2, height / 2)
   space.update(deltaT, ctx)
