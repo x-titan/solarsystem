@@ -1,8 +1,10 @@
 <style>
+  *,
   html,
   body {
     margin: 0;
     padding: 0;
+    color: #fff;
   }
 
   canvas {
@@ -15,16 +17,25 @@
     position: fixed;
     top: 0;
     left: 0;
-    color: white;
+  }
+
+  p {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    font-family: sans-serif;
+    font-size: 1em;
+    padding: 1em;
   }
 </style>
 
 <body>
   <canvas id="canvas"></canvas>
+  <p>Click for add new Planet. Just hold for increase planet mass</p>
   <script src="https://x-titan.github.io/utils/index.js" type="module" defer></script>
   <script src="https://x-titan.github.io/web-utils/index.js" type="module" defer></script>
   <script src="https://x-titan.github.io/loop/index.js" type="module" defer></script>
   <script src="https://x-titan.github.io/vector/index.js" type="module" defer></script>
   <script src="https://x-titan.github.io/list/index.js" type="module" defer></script>
-  <script src="index.js" type="module" defer></script>
+  <script src="./index.js" type="module" defer></script>
 </body>

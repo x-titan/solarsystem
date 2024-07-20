@@ -14,19 +14,11 @@ export class Planet {
     this.mass = mass || 10
     this.radius = sqrt(this.mass) * 2
     this.color = color || "white"
-    this.border = "black"
+    this.borderColor = "white"
     this.notMove = notMove || false
   }
-  addForce(f) {
-    this.force.add(f.x / this.mass, f.y / this.mass)
-    return this
-  }
-  subForce(f) {
-    this.force.add(-f.x / this.mass, -f.y / this.mass)
-    return this
-  }
   update(deltaT, ctx) {
-    const { notMove, vel, pos, force, color, radius } = this
+    const { notMove, vel, pos, force, color, radius,borderColor } = this
     if (!notMove) {
       vel.addVec(force.mul(deltaT))
       pos.x += vel.x * deltaT
@@ -37,6 +29,8 @@ export class Planet {
     ctx.fillStyle = color
     ctx.arc(pos.x, pos.y, radius, 0, PI2)
     ctx.fill()
+    ctx.strokeStyle = borderColor
+    ctx.stroke()
     ctx.closePath()
     return this
   }
